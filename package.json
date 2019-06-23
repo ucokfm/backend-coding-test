@@ -8,8 +8,9 @@
   },
   "scripts": {
     "build-doc": "redoc-cli bundle ./doc/openapi.yaml -o ./doc/index.html",
-    "lint": "eslint index.js src/**",
-    "test": "eslint index.js src/** && mocha tests",
+    "lint": "eslint index.js src/** tests/**",
+    "coverage": "nyc mocha tests",
+    "test": "npm run lint && npm run coverage",
     "start": "node index.js"
   },
   "keywords": [
@@ -25,6 +26,7 @@
   "devDependencies": {
     "eslint": "^6.0.0",
     "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "redoc-cli": "^0.8.4",
     "supertest": "^4.0.2"
   }
