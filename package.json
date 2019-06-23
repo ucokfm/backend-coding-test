@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build-doc": "redoc-cli bundle ./doc/openapi.yaml -o ./doc/index.html",
-    "test": "mocha tests",
+    "test": "eslint index.js src/** && mocha tests",
     "start": "node index.js"
   },
   "keywords": [
