@@ -30,5 +30,10 @@
     "nyc": "^14.1.1",
     "redoc-cli": "^0.8.4",
     "supertest": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   }
 }
