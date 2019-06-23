@@ -17,6 +17,12 @@ describe('API tests', () => {
             }
 
             buildSchemas(db);
+            for (let i=0; i < 25; i++) {
+                db.run(`
+                    INSERT INTO Rides (startLat, startLong, endLat, endLong, riderName, driverName, driverVehicle)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `, [80, 80, 80, 80, 'John Doe', 'Richard', 'Car']);
+            }
 
             done();
         });
@@ -28,18 +34,6 @@ describe('API tests', () => {
                 .get('/health')
                 .expect('Content-Type', /text/)
                 .expect(200, done);
-        });
-    });
-
-    describe('GET /rides', () => {
-        it('should return error could not find rides', (done) => {
-            request(app)
-                .get('/rides')
-                .expect('Content-Type', /json/)
-                .expect(200, {
-                    error_code: 'RIDES_NOT_FOUND_ERROR',
-                    message: 'Could not find any rides',
-                }, done);
         });
     });
 
@@ -60,7 +54,7 @@ describe('API tests', () => {
                 .expect(200)
                 .end(function(err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body[0].rideID, 1);
+                    assert.equal(res.body[0].rideID, 26);
                     assert.ok(res.body[0].created);
                     done();
                 });
@@ -113,7 +107,7 @@ describe('API tests', () => {
                 .expect(200)
                 .end(function(err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 1);
+                    assert.equal(res.body.length, 26);
                     done();
                 });
         });
@@ -129,12 +123,50 @@ describe('API tests', () => {
 
         it('should error could not find any rides', (done) => {
             request(app)
-                .get('/rides/2')
+                .get('/rides/99')
                 .expect('Content-Type', /json/)
                 .expect(200, {
                     error_code: 'RIDES_NOT_FOUND_ERROR',
                     message: 'Could not find any rides',
                 }, done); 
+        });
+    });
+
+    describe('Pagination', () => {
+        it('should return default 10 rows', (done) => {
+            request(app)
+                .get('/rides?page=1')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.length, 10);
+                    done();
+                });
+        });
+
+        it('should return limit 5 rows', (done) => {
+            request(app)
+                .get('/rides?page=1&limit=5')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.length, 5);
+                    done();
+                });
+        });
+
+        it('should return page 3', (done) => {
+            request(app)
+                .get('/rides?page=3')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body[0].rideID, 21);
+                    done();
+                });
         });
     });
 });

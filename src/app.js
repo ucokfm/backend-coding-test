@@ -77,7 +77,16 @@ module.exports = (db) => {
     });
 
     app.get('/rides', (req, res) => {
-        db.all('SELECT * FROM Rides', function (err, rows) {
+        const page = Number(req.query.page);
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+        let sql = 'SELECT * FROM Rides';
+        let params = [];
+        if (page) {
+            sql = 'SELECT * FROM Rides LIMIT ? OFFSET ?';
+            const offset = (page - 1) * limit;
+            params = [ limit, offset ];
+        }
+        db.all(sql, params, function (err, rows) {
             if (err) {
                 return res.send({
                     error_code: 'SERVER_ERROR',
