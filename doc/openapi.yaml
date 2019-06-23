@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: Ride API
+  description: Use this server API for saving rides data 
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Check Server Status
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: Healthy
+  /rides:
+    post:
+      summary: Create New Ride
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_lat:
+                  type: integer
+                  minimum: -90
+                  maximum: 90
+                  example: 30
+                start_long:
+                  type: integer
+                  minimum: -180
+                  maximum: 180
+                  example: 100
+                end_lat:
+                  type: integer
+                  minimum: -90
+                  maximum: 90
+                  example: -20
+                end_long:
+                  type: integer
+                  minimum: -180
+                  maximum: 180
+                  example: -70
+                rider_name:
+                  type: string
+                  minLength: 1,
+                  example: John Doe
+                driver_name:
+                  type: string
+                  minLength: 1,
+                  example: Richard
+                driver_vehicle:
+                  type: string
+                  minLength: 1,
+                  example: Car
+              required:
+                - start_lat
+                - start_long
+                - end_lat
+                - end_long
+                - rider_name
+                - driver_name
+                - driver_vehicle
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      type: object
+                      properties:
+                        rideID:
+                          type: integer
+                        startLat:
+                          type: integer
+                          minimum: -90
+                          maximum: 90
+                        startLong:
+                          type: integer
+                          minimum: -180
+                          maximum: 180
+                        endLat:
+                          type: integer
+                          minimum: -90
+                          maximum: 90
+                        endLong:
+                          type: integer
+                          minimum: -180
+                          maximum: 180
+                        riderName:
+                          type: string
+                        driverName:
+                          type: string
+                        driverVehicle:
+                          type: string
+                        created:
+                          type: string
+                          format: YYYY-MM-DD HH:MM:SS
+                  - type: object
+                    properties:
+                      error_code:
+                        type: string
+                        enum:
+                          - VALIDATION_ERROR
+                          - SERVER_ERROR
+                      message:
+                        type: string
+              example:
+                - rideID: 1
+                  startLat: 30
+                  startLong: 100
+                  endLat: -20
+                  endLong: -70
+                  riderName: John Doe
+                  driverName: Richard
+                  driverVehicle: Car
+                  created: "2019-06-23 03:35:41"
+    get:
+      summary: Find All Rides
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: array
+                  items:
+                    type: object
+                    properties:
+                      rideID:
+                        type: integer
+                      startLat:
+                        type: integer
+                        minimum: -90
+                        maximum: 90
+                      startLong:
+                        type: integer
+                        minimum: -180
+                        maximum: 180
+                      endLat:
+                        type: integer
+                        minimum: -90
+                        maximum: 90
+                      endLong:
+                        type: integer
+                        minimum: -180
+                        maximum: 180
+                      riderName:
+                        type: string
+                      driverName:
+                        type: string
+                      driverVehicle:
+                        type: string
+                      created:
+                        type: string
+                        format: YYYY-MM-DD HH:MM:SS
+                - type: object
+                  properties:
+                    error_code:
+                      type: string
+                      enum:
+                        - RIDES_NOT_FOUND_ERROR
+                        - SERVER_ERROR
+                    message:
+                      type: string
+              example:
+                - rideID: 1
+                  startLat: 30
+                  startLong: 100
+                  endLat: -20
+                  endLong: -70
+                  riderName: John Doe
+                  driverName: Richard
+                  driverVehicle: Car
+                  created: "2019-06-23 03:35:41"
+                - rideID: 2
+                  startLat: 45
+                  startLong: 120
+                  endLat: 10
+                  endLong: 60
+                  riderName: Jane Doe
+                  driverName: Alex
+                  driverVehicle: Scooter
+                  created: "2019-06-23 04:22:09"
+  /rides/{rideID}:
+    get:
+      summary: Get A Ride by ID
+      parameters:
+        - name: rideID
+          in: path
+          required: true
+          description: The ID of the ride to return
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: array
+                  items:
+                    type: object
+                    properties:
+                      rideID:
+                        type: integer
+                      startLat:
+                        type: integer
+                        minimum: -90
+                        maximum: 90
+                      startLong:
+                        type: integer
+                        minimum: -180
+                        maximum: 180
+                      endLat:
+                        type: integer
+                        minimum: -90
+                        maximum: 90
+                      endLong:
+                        type: integer
+                        minimum: -180
+                        maximum: 180
+                      riderName:
+                        type: string
+                      driverName:
+                        type: string
+                      driverVehicle:
+                        type: string
+                      created:
+                        type: string
+                        format: YYYY-MM-DD HH:MM:SS
+                - type: object
+                  properties:
+                    error_code:
+                      type: string
+                      enum:
+                        - RIDES_NOT_FOUND_ERROR
+                        - SERVER_ERROR
+                    message:
+                      type: string
+              example:
+                - rideID: 1
+                  startLat: 30
+                  startLong: 100
+                  endLat: -20
+                  endLong: -70
+                  riderName: John Doe
+                  driverName: Richard
+                  driverVehicle: Car
+                  created: "2019-06-23 03:35:41"
