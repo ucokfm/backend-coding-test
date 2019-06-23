@@ -116,5 +116,7 @@ module.exports = (db) => {
         });
     });
 
+    app.use(express.static('doc'));
+
     return app;
 };
