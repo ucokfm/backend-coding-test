@@ -123,6 +123,18 @@ paths:
                   created: "2019-06-23 03:35:41"
     get:
       summary: Find All Rides
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          example: 5
       responses:
         '200':
           description: OK
