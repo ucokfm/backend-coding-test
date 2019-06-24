@@ -45,7 +45,7 @@ module.exports = (db) => {
 
     app.get('/rides/:id', async (req, res) => {
         try {
-            const rows = await dbAll(`SELECT * FROM Rides WHERE rideID='${req.params.id}'`);
+            const rows = await dbAll('SELECT * FROM Rides WHERE rideID=?', [req.params.id]);
             res.send(rows);
         } catch (error) {
             return res.send(error); 

@@ -188,6 +188,69 @@ describe('API tests', () => {
                 });
             }
         });
+    });
 
+    describe('Prevent SQL injection', () => {
+        it('should prevent injection in POST /rides', (done) => {
+            request(app)
+                .post('/rides')
+                .send({
+                    start_lat: 80,
+                    start_long: 80,
+                    end_lat: 80,
+                    end_long: 80,
+                    rider_name: 'John Doe',
+                    driver_name: 'Richard',
+                    driver_vehicle: 'Car); DELETE FROM Rides WHERE (rideID>3',
+                })
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err) {
+                    if (err) return done(err);
+                    request(app)
+                        .get('/rides')
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .end(function(err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 27);
+                            done();
+                        });
+                });
+        });
+
+        it('should prevent injection in GET /rides', (done) => {
+            request(app)
+                .get('/rides?page=1&limit=1; DELETE FROM Rides WHERE (rideID>3);')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err) {
+                    if (err) return done(err);
+                    request(app)
+                        .get('/rides')
+                        .expect('Content-Type', /json/)
+                        .expect(200)
+                        .end(function(err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 27);
+                            done();
+                        }); 
+                });
+        });
+
+        it('should prevent injection in GET /rides/{rideID}', (done) => {
+            request(app)
+                .get('/rides/99\' OR 1=1;')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function(err, res) {
+                    if (err) return done(err); 
+                    assert.deepEqual(res.body, {
+                        error_code: 'RIDES_NOT_FOUND_ERROR',
+                        message: 'Could not find any rides',
+                    });
+                    done();
+                });
+        });
     });
 });
