@@ -169,4 +169,25 @@ describe('API tests', () => {
                 });
         });
     });
+
+    describe('dbAll', () => {
+        const enhanceDb = require('../src/enhance-db');
+        const { dbAll } = enhanceDb(db);
+        it('should return data rows', async () => {
+            const rows = await dbAll('SELECT * FROM Rides');
+            assert.equal(rows.length, 26);
+        });
+
+        it ('should throw server error', async () => {
+            try {
+                await dbAll('SELECT * FROM Rides WHERE foo=1');
+            } catch (error) {
+                assert.deepEqual(error, {
+                    error_code: 'SERVER_ERROR',
+                    message: 'Unknown error',
+                });
+            }
+        });
+
+    });
 });
