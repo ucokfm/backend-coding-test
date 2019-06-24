@@ -26,6 +26,7 @@
   "devDependencies": {
     "artillery": "^1.6.0-28",
     "eslint": "^6.0.0",
+    "forever": "^1.0.0",
     "husky": "^2.4.1",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1",
