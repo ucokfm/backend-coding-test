@@ -11,6 +11,7 @@
     "lint": "eslint index.js src/** tests/**",
     "coverage": "nyc mocha tests",
     "test": "npm run lint && npm run coverage",
+    "test:load": "forever start --minUptime 1000 --spinSleepTime 1000 index.js && artillery run artillery.yml",
     "start": "node index.js"
   },
   "keywords": [
@@ -24,7 +25,9 @@
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {
+    "artillery": "^1.6.0-28",
     "eslint": "^6.0.0",
+    "forever": "^1.0.0",
     "husky": "^2.4.1",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1",
