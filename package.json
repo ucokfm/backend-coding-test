@@ -11,6 +11,7 @@
     "lint": "eslint index.js src/** tests/**",
     "coverage": "nyc mocha tests",
     "test": "npm run lint && npm run coverage",
+    "test:load": "forever start --minUptime 1000 --spinSleepTime 1000 index.js && artillery run artillery.yml",
     "start": "node index.js"
   },
   "keywords": [
